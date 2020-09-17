@@ -21,11 +21,11 @@ var DefaultFormatter = func(m map[string]string) string {
 	// ordered by keys.
 	var keys []string
 	{
-		for k, _ := range m {
+		for k := range m {
 			keys = append(keys, k)
 		}
 
-		sort.Sort(sort.StringSlice(keys))
+		sort.Strings(keys)
 	}
 
 	// Below we compute a JSON string for the structured log line we want to
