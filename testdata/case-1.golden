@@ -1,0 +1,6 @@
+{
+	"caller": "--REPLACED--/logger_test.go:90",
+	"lvl": "inf",
+	"mes": "foo",
+	"time": "time"
+}
