@@ -10,7 +10,8 @@ import (
 
 const (
 	KeyCaller = "caller"
-	KeyTimer  = "time"
+	KeyStack  = "stack"
+	KeyTime   = "time"
 )
 
 type Config struct {
@@ -85,7 +86,7 @@ func (l *Logger) Log(ctx context.Context, kvs ...string) {
 	// Set the additional magic key-value pairs to get e.g. the log caller and
 	// time.
 	m[KeyCaller] = l.caller()
-	m[KeyTimer] = l.timer()
+	m[KeyTime] = l.timer()
 
 	// What we get from the configured formatter can simply be written to the
 	// configured writer.

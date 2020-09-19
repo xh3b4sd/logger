@@ -1,6 +1,6 @@
 {
-	"caller": "--REPLACED--/logger_test.go:117",
-	"lvl": "inf",
-	"mes": "foo",
+	"caller": "--REPLACED--/logger_test.go:129",
+	"level": "info",
+	"message": "foo",
 	"time": "time"
 }

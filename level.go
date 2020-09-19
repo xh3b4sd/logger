@@ -3,14 +3,14 @@ package logger
 import "fmt"
 
 const (
-	LevelKey = "lvl"
+	LevelKey = "level"
 )
 
 const (
-	LevelDebug   = "deb"
-	LevelInfo    = "inf"
-	LevelWarning = "war"
-	LevelError   = "err"
+	LevelDebug   = "debug"
+	LevelInfo    = "info"
+	LevelWarning = "warning"
+	LevelError   = "error"
 )
 
 var (

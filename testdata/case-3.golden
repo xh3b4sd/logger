@@ -1,6 +1,6 @@
 {
-	"caller": "--REPLACED--/logger_test.go:117",
-	"lvl": "err",
-	"mes": "foo",
+	"caller": "--REPLACED--/logger_test.go:129",
+	"level": "error",
+	"message": "foo",
 	"time": "time"
 }
