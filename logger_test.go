@@ -13,6 +13,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/xh3b4sd/logger/meta"
+	"github.com/xh3b4sd/tracer"
 )
 
 var update = flag.Bool("update", false, "update .golden files")
@@ -35,8 +36,8 @@ func Test_Logger_Log(t *testing.T) {
 		{
 			ctx: context.Background(),
 			kvs: []string{
-				"lvl", "deb",
-				"mes", "foo",
+				"level", "debug",
+				"message", "foo",
 			},
 		},
 		// Case 1 emits an info log. The default filter allows info logs. There
@@ -44,8 +45,8 @@ func Test_Logger_Log(t *testing.T) {
 		{
 			ctx: context.Background(),
 			kvs: []string{
-				"lvl", "inf",
-				"mes", "foo",
+				"level", "info",
+				"message", "foo",
 			},
 		},
 		// Case 2 emits a warning log. The default filter allows info logs. There
@@ -53,8 +54,8 @@ func Test_Logger_Log(t *testing.T) {
 		{
 			ctx: context.Background(),
 			kvs: []string{
-				"lvl", "war",
-				"mes", "foo",
+				"level", "warning",
+				"message", "foo",
 			},
 		},
 		// Case 3 emits an error log. The default filter allows info logs. There
@@ -62,8 +63,8 @@ func Test_Logger_Log(t *testing.T) {
 		{
 			ctx: context.Background(),
 			kvs: []string{
-				"lvl", "err",
-				"mes", "foo",
+				"level", "error",
+				"message", "foo",
 			},
 		},
 		// Case 4 emits an uneven amount of key-value pairs. Nothing but an
@@ -71,8 +72,8 @@ func Test_Logger_Log(t *testing.T) {
 		{
 			ctx: context.Background(),
 			kvs: []string{
-				"lvl", "err",
-				"mes",
+				"level", "error",
+				"message",
 			},
 		},
 		// Case 5 emits an error log. The log line is annotated with additional
@@ -87,8 +88,19 @@ func Test_Logger_Log(t *testing.T) {
 				return ctx
 			}(),
 			kvs: []string{
-				"lvl", "err",
-				"mes", "foo",
+				"level", "error",
+				"message", "foo",
+			},
+		},
+		// Case 6 emits a warning log. The default filter allows info logs.
+		// There is a log line in the golden file containing a stack trace of
+		// the provided error.
+		{
+			ctx: context.Background(),
+			kvs: []string{
+				"level", "warning",
+				"message", "foo",
+				"stack", tracer.JSON(&tracer.Error{Kind: "testError"}),
 			},
 		},
 	}

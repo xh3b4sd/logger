@@ -1,8 +1,9 @@
 {
 	"caller": "--REPLACED--/logger_test.go:129",
-	"foo": "bar",
-	"key": "val",
-	"level": "error",
+	"level": "warning",
 	"message": "foo",
+	"stack": {
+		"kind": "testError"
+	},
 	"time": "time"
 }
