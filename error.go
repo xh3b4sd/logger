@@ -1,14 +1,15 @@
 package logger
 
 import (
-	"github.com/giantswarm/microerror"
+	"errors"
+
+	"github.com/xh3b4sd/tracer"
 )
 
-var invalidConfigError = &microerror.Error{
+var invalidConfigError = &tracer.Error{
 	Kind: "invalidConfigError",
 }
 
-// IsInvalidConfig asserts invalidConfigError.
 func IsInvalidConfig(err error) bool {
-	return microerror.Cause(err) == invalidConfigError
+	return errors.Is(err, invalidConfigError)
 }

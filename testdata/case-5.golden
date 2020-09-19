@@ -1,5 +1,7 @@
 {
 	"caller": "--REPLACED--/logger_test.go:117",
+	"foo": "bar",
+	"key": "val",
 	"lvl": "err",
 	"mes": "foo",
 	"time": "time"

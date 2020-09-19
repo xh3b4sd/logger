@@ -12,18 +12,20 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/xh3b4sd/logger/meta"
 )
 
 var update = flag.Bool("update", false, "update .golden files")
 
-// Test_MicroLogger tests MicroLogger output.
+// Test_Logger_Log tests the logger behaviour based on its output. The tests use
+// golden file references. In case the golden files change something is broken.
+// In case intentional changes get introduced the golden files have to be
+// updated. In case the golden files have to be adjusted, simply provide the
+// -update flag when running the tests.
 //
-// It uses golden file as reference and when changes to template are
-// intentional, they can be updated by providing -update flag for go test.
+//     go test . -run Test_Logger_Log -update
 //
-//	go test . -run Test_MicroLogger -update
-//
-func Test_MicroLogger(t *testing.T) {
+func Test_Logger_Log(t *testing.T) {
 	testCases := []struct {
 		ctx context.Context
 		kvs []string
@@ -59,6 +61,31 @@ func Test_MicroLogger(t *testing.T) {
 		// is a log line in the golden file.
 		{
 			ctx: context.Background(),
+			kvs: []string{
+				"lvl", "err",
+				"mes", "foo",
+			},
+		},
+		// Case 4 emits an uneven amount of key-value pairs. Nothing but an
+		// error message will be logged in the golden file.
+		{
+			ctx: context.Background(),
+			kvs: []string{
+				"lvl", "err",
+				"mes",
+			},
+		},
+		// Case 5 emits an error log. The log line is annotated with additional
+		// meta information. There is a log line in the golden file.
+		{
+			ctx: func() context.Context {
+				ctx := context.Background()
+
+				ctx = meta.Add(ctx, "foo", "bar")
+				ctx = meta.Add(ctx, "key", "val")
+
+				return ctx
+			}(),
 			kvs: []string{
 				"lvl", "err",
 				"mes", "foo",
@@ -100,10 +127,13 @@ func Test_MicroLogger(t *testing.T) {
 
 				buf := &bytes.Buffer{}
 				err := json.Indent(buf, b, "", "\t")
-				if err != nil {
+				if isJSONError(err) {
+					actual = w.Bytes()
+				} else if err != nil {
 					t.Fatal(err)
+				} else {
+					actual = buf.Bytes()
 				}
-				actual = buf.Bytes()
 			}
 
 			p := filepath.Join("testdata", fileName(i))
@@ -128,4 +158,9 @@ func Test_MicroLogger(t *testing.T) {
 
 func fileName(i int) string {
 	return "case-" + strconv.Itoa(i) + ".golden"
+}
+
+func isJSONError(err error) bool {
+	_, ok := err.(*json.SyntaxError)
+	return ok
 }
