@@ -1,5 +1,5 @@
 {
-	"caller": "--REPLACED--/logger_test.go:90",
+	"caller": "--REPLACED--/logger_test.go:117",
 	"lvl": "war",
 	"mes": "foo",
 	"time": "time"

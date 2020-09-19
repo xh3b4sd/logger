@@ -59,7 +59,7 @@ func New(config Config) (*Logger, error) {
 
 func (l *Logger) Log(ctx context.Context, kvs ...string) {
 	if len(kvs)%2 != 0 {
-		_, err := fmt.Fprintln(l.writer, "given key-values must be complete for logging")
+		_, err := fmt.Fprintln(l.writer, "given key-value pairs must be complete for logging")
 		if err != nil {
 			panic(err)
 		}
