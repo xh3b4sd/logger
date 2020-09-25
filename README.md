@@ -31,8 +31,6 @@ business logic behaviour.
 r.logger.Log(ctx, "level", "info", "message", "something important happened")
 ```
 
----
-
 Below is an example of emitting `error` logs providing information of unexpected
 business logic behaviour. Note that stack trace logging is wel integrated with
 [tracer](https://github.com/xh3b4sd/tracer).
