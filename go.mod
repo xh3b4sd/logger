@@ -5,5 +5,5 @@ go 1.15
 require (
 	github.com/go-stack/stack v1.8.0
 	github.com/google/go-cmp v0.5.2
-	github.com/xh3b4sd/tracer v0.2.0
+	github.com/xh3b4sd/tracer v0.3.1
 )
