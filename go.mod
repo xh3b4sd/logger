@@ -1,6 +1,6 @@
 module github.com/xh3b4sd/logger
 
-go 1.15
+go 1.16
 
 require (
 	github.com/go-stack/stack v1.8.0
