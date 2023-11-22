@@ -1,0 +1,10 @@
+{
+  "time": "time",
+  "leve": "warn",
+  "mess": "foo",
+  "light": "darkness",
+  "stac": [
+    "--REPLACED--/logger_test.go:104"
+  ],
+  "call": "--REPLACED--/logger_test.go:176"
+}

@@ -1,0 +1,6 @@
+{
+  "time": "time",
+  "leve": "info",
+  "mess": "foo bar baz",
+  "call": "--REPLACED--/logger_test.go:176"
+}
