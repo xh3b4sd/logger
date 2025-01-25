@@ -3,5 +3,5 @@
   "leve": "warn",
   "mess": "foo",
   "code": "red",
-  "call": "--REPLACED--/logger_test.go:176"
+  "call": "--REPLACED--/logger_test.go:154"
 }

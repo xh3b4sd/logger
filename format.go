@@ -2,7 +2,7 @@ package logger
 
 import (
 	"context"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/xh3b4sd/logger/meta"
@@ -22,21 +22,24 @@ func JSONFormatter(c context.Context, m map[string]string) string {
 	// ordered by keys.
 	var ctx []string
 	var oth []string
-	{
-		for k := range m {
-			if k == KeyCal || k == KeyLev || k == KeyMes || k == KeySta || k == KeyTim {
-				continue
-			}
-
-			if meta.Has(c, k) {
-				ctx = append(ctx, k)
-			} else {
-				oth = append(oth, k)
-			}
+	for k := range m {
+		if k == KeyCal || k == KeyLev || k == KeyMes || k == KeySta || k == KeyTim {
+			continue
 		}
 
-		sort.Strings(ctx)
-		sort.Strings(oth)
+		if c != nil && meta.Has(c, k) {
+			ctx = append(ctx, k)
+		} else {
+			oth = append(oth, k)
+		}
+	}
+
+	if len(ctx) != 0 {
+		slices.Sort(ctx)
+	}
+
+	{
+		slices.Sort(oth)
 	}
 
 	var key func(string) string
@@ -70,17 +73,20 @@ func JSONFormatter(c context.Context, m map[string]string) string {
 	{
 		bui = func(k string) string {
 			var s string
-
-			s += "\""
-			s += key(k)
-			s += "\""
-			s += ":"
+			{
+				s += "\""
+				s += key(k)
+				s += "\""
+				s += ":"
+			}
 
 			if k != KeySta {
 				s += "\""
 			}
 
-			s += val(k)
+			{
+				s += val(k)
+			}
 
 			if k != KeySta {
 				s += "\""
@@ -94,66 +100,71 @@ func JSONFormatter(c context.Context, m map[string]string) string {
 	// emit.
 	var s string
 	{
-		{
-			s += "{ "
+		s += "{ "
+	}
+
+	{
+		s += bui(KeyTim)
+		s += ", "
+		s += bui(KeyLev)
+		s += ", "
+	}
+
+	for _, k := range ctx {
+		s += bui(k)
+		s += ", "
+	}
+
+	{
+		s += bui(KeyMes)
+	}
+
+	for i, k := range oth {
+		if i == 0 {
+			s += ", "
+		}
+
+		if m[k] == "" {
+			continue
 		}
 
 		{
-			s += bui(KeyTim)
-			s += ", "
-			s += bui(KeyLev)
-			s += ", "
+			s += bui(k)
 		}
 
-		{
-			for _, k := range ctx {
-				s += bui(k)
+		if i+1 < len(oth) {
+			s += ", "
+		}
+	}
+
+	{
+		_, e := m[KeySta]
+		if e {
+			if !strings.HasSuffix(s, ", ") {
 				s += ", "
 			}
-		}
 
-		{
-			s += bui(KeyMes)
-		}
-
-		{
-			for i, k := range oth {
-				if i == 0 {
-					s += ", "
-				}
-				if m[k] == "" {
-					continue
-				}
-				s += bui(k)
-				if i+1 < len(oth) {
-					s += ", "
-				}
-			}
-		}
-
-		{
-			_, e := m[KeySta]
-			if e {
-				if !strings.HasSuffix(s, ", ") {
-					s += ", "
-				}
+			{
 				s += bui(KeySta)
 			}
 		}
+	}
 
-		{
-			_, e := m[KeyCal]
-			if e {
-				if !strings.HasSuffix(s, ", ") {
-					s += ", "
-				}
+	{
+		_, e := m[KeyCal]
+		if e {
+			if !strings.HasSuffix(s, ", ") {
+				s += ", "
+			}
+
+			{
 				s += bui(KeyCal)
 			}
 		}
+	}
 
-		{
-			s += " }"
-		}
+	{
+		s += " }"
 	}
 
 	return s

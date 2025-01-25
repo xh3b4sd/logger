@@ -3,5 +3,6 @@
   "leve": "warn",
   "mess": "foo",
   "desc": "whatever",
-  "call": "--REPLACED--/logger_test.go:176"
+  "kind": "notfoundError",
+  "call": "--REPLACED--/logger_test.go:354"
 }

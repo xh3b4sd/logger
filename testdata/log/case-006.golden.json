@@ -4,7 +4,7 @@
   "mess": "foo",
   "light": "darkness",
   "stac": [
-    "--REPLACED--/logger_test.go:104"
+    "--REPLACED--/logger_test.go:86"
   ],
-  "call": "--REPLACED--/logger_test.go:176"
+  "call": "--REPLACED--/logger_test.go:154"
 }

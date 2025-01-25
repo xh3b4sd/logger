@@ -6,6 +6,7 @@ import (
 	"io"
 
 	"github.com/xh3b4sd/logger/meta"
+	"github.com/xh3b4sd/tracer"
 )
 
 const (
@@ -20,11 +21,11 @@ const (
 )
 
 type Config struct {
-	Caller    func() string
-	Filter    func(context.Context, map[string]string) bool
-	Formatter func(context.Context, map[string]string) string
-	Timer     func() string
-	Writer    io.Writer
+	Caller func() string
+	Filter func(context.Context, map[string]string) bool
+	Format func(context.Context, map[string]string) string
+	Timer  func() string
+	Writer io.Writer
 }
 
 type Logger struct {
@@ -42,8 +43,8 @@ func New(config Config) *Logger {
 	if config.Filter == nil {
 		config.Filter = DefaultFilter
 	}
-	if config.Formatter == nil {
-		config.Formatter = DefaultFormatter
+	if config.Format == nil {
+		config.Format = DefaultFormatter
 	}
 	if config.Timer == nil {
 		config.Timer = DefaultTimer
@@ -52,46 +53,36 @@ func New(config Config) *Logger {
 		config.Writer = DefaultWriter
 	}
 
-	l := &Logger{
+	return &Logger{
 		cal: config.Caller,
 		fil: config.Filter,
-		frm: config.Formatter,
+		frm: config.Format,
 		tim: config.Timer,
 		wri: config.Writer,
 	}
-
-	return l
 }
 
-func (l *Logger) Log(c context.Context, pai ...string) {
-	{
-		if len(pai)%2 != 0 {
-			_, err := fmt.Fprintln(l.wri, "key-value pairs must be complete")
-			if err != nil {
-				panic(err)
-			}
-			return
+func (l *Logger) Log(pai ...string) {
+	if len(pai)%2 != 0 {
+		_, err := fmt.Fprintln(l.wri, "Log() received uneven amount of key-value pairs")
+		if err != nil {
+			tracer.Panic(err)
 		}
+
+		return
 	}
 
 	// At first we need to have a map full of all the key-value pairs of the
 	// current log line.
-	m := meta.All(c)
-	{
-		for i := 1; i < len(pai); i += 2 {
-			k := pai[i-1]
-			v := pai[i]
-
-			m[k] = v
-		}
+	all := map[string]string{}
+	for i := 1; i < len(pai); i += 2 {
+		all[pai[i-1]] = pai[i]
 	}
 
 	// We check if the current log line should be emitted or filtered. The
 	// configured filter tells us if we should proceed or not.
-	{
-		if l.fil(c, m) {
-			return
-		}
+	if l.fil(nil, all) {
+		return
 	}
 
 	// Set the additional magic key-value pairs to get e.g. the log caller and
@@ -99,19 +90,68 @@ func (l *Logger) Log(c context.Context, pai ...string) {
 	{
 		cal := l.cal()
 		if cal != "" {
-			m[KeyCal] = cal
+			all[KeyCal] = cal
 		}
 
 		tim := l.tim()
 		if tim != "" {
-			m[KeyTim] = tim
+			all[KeyTim] = tim
 		}
 	}
 
 	// What we get from the configured formatter can simply be written to the
 	// configured writer.
-	_, err := fmt.Fprintln(l.wri, l.frm(c, m))
-	if err != nil {
-		panic(err)
+	{
+		_, err := fmt.Fprintln(l.wri, l.frm(nil, all))
+		if err != nil {
+			tracer.Panic(err)
+		}
+	}
+}
+
+func (l *Logger) LogCtx(ctx context.Context, pai ...string) {
+	if len(pai)%2 != 0 {
+		_, err := fmt.Fprintln(l.wri, "LogCtx() received uneven amount of key-value pairs")
+		if err != nil {
+			tracer.Panic(err)
+		}
+
+		return
+	}
+
+	// At first we need to have a map full of all the key-value pairs of the
+	// current log line.
+	all := meta.All(ctx)
+	for i := 1; i < len(pai); i += 2 {
+		all[pai[i-1]] = pai[i]
+	}
+
+	// We check if the current log line should be emitted or filtered. The
+	// configured filter tells us if we should proceed or not.
+	if l.fil(ctx, all) {
+		return
+	}
+
+	// Set the additional magic key-value pairs to get e.g. the log caller and
+	// time.
+	{
+		cal := l.cal()
+		if cal != "" {
+			all[KeyCal] = cal
+		}
+
+		tim := l.tim()
+		if tim != "" {
+			all[KeyTim] = tim
+		}
+	}
+
+	// What we get from the configured formatter can simply be written to the
+	// configured writer.
+	{
+		_, err := fmt.Fprintln(l.wri, l.frm(ctx, all))
+		if err != nil {
+			tracer.Panic(err)
+		}
 	}
 }
