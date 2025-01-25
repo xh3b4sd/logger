@@ -1,9 +1,0 @@
-{
-  "time": "time",
-  "leve": "warn",
-  "mess": "foo",
-  "stac": [
-    "--REPLACED--/logger_test.go:114",
-    "--REPLACED--/logger_test.go:114"
-  ]
-}

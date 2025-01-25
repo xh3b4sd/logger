@@ -4,4 +4,6 @@ import "context"
 
 type fake struct{}
 
-func (r fake) Log(ctx context.Context, pai ...string) {}
+func (r fake) Log(pai ...string) {}
+
+func (r fake) LogCtx(ctx context.Context, pai ...string) {}
