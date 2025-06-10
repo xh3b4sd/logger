@@ -1,5 +1,5 @@
 {
   "time": "time",
-  "leve": "erro",
-  "mess": "foo bar baz"
+  "level": "error",
+  "message": "foo bar baz"
 }

@@ -1,11 +1,11 @@
 {
   "time": "time",
-  "leve": "erro",
+  "level": "error",
   "foo": "bar",
   "key": "val",
   "mar": "noo",
   "tri": "fan",
   "zoo": "fre",
-  "mess": "foo",
-  "call": "--REPLACED--/logger_test.go:354"
+  "message": "foo",
+  "caller": "--REPLACED--/logger_test.go:354"
 }
