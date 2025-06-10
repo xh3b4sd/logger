@@ -42,40 +42,13 @@ func JSONFormatter(c context.Context, m map[string]string) string {
 		slices.Sort(oth)
 	}
 
-	var key func(string) string
-	{
-		key = func(k string) string {
-			if k == KeyCal || k == KeyCod || k == KeyDes || k == KeyDoc || k == KeyLev || k == KeyMes || k == KeySta || k == KeyTim {
-				return k[:4]
-			}
-
-			return k
-		}
-	}
-
-	var val func(string) string
-	{
-		val = func(k string) string {
-			v, e := m[k]
-			if !e {
-				return ""
-			}
-
-			if k == KeyLev {
-				return v[:4]
-			}
-
-			return v
-		}
-	}
-
 	var bui func(string) string
 	{
 		bui = func(k string) string {
 			var s string
 			{
 				s += "\""
-				s += key(k)
+				s += k
 				s += "\""
 				s += ":"
 			}
@@ -85,7 +58,7 @@ func JSONFormatter(c context.Context, m map[string]string) string {
 			}
 
 			{
-				s += val(k)
+				s += m[k]
 			}
 
 			if k != KeySta {
