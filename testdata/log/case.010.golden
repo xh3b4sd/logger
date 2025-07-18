@@ -3,5 +3,5 @@
   "level": "warning",
   "message": "foo",
   "desc": "whatever",
-  "caller": "--REPLACED--/logger_test.go:354"
+  "caller": "--REPLACED--/logger_test.go:157"
 }

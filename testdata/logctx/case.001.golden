@@ -2,5 +2,5 @@
   "time": "time",
   "level": "info",
   "message": "foo bar baz",
-  "caller": "--REPLACED--/logger_test.go:154"
+  "caller": "--REPLACED--/logger_test.go:361"
 }
