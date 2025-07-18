@@ -4,5 +4,5 @@
   "message": "foo",
   "desc": "whatever",
   "kind": "notfoundError",
-  "caller": "--REPLACED--/logger_test.go:354"
+  "caller": "--REPLACED--/logger_test.go:361"
 }

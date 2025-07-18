@@ -1,9 +1,0 @@
-{
-  "time": "time",
-  "level": "warning",
-  "message": "foo",
-  "stack": [
-    "--REPLACED--/logger_test.go:95",
-    "--REPLACED--/logger_test.go:95"
-  ]
-}

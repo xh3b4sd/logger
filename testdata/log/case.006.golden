@@ -1,0 +1,13 @@
+{
+  "time": "time",
+  "level": "warning",
+  "message": "foo",
+  "light": "darkness",
+  "stack": {
+    "description": "test error description",
+    "trace": [
+      "--REPLACED--/logger_test.go:89"
+    ]
+  },
+  "caller": "--REPLACED--/logger_test.go:157"
+}

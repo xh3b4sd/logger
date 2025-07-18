@@ -15,10 +15,13 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-// go test -update
 var update = flag.Bool("update", false, "update .golden files")
 
-func Test_Logger_Log(t *testing.T) {
+// Test_Logger_Log_without_context ensures that the logger implementation
+// produces the correct output without supplying any more context.
+//
+//	go test -run Test_Logger_Log_without_context -update
+func Test_Logger_Log_without_context(t *testing.T) {
 	testCases := []struct {
 		kvs []string
 		cal func() string
@@ -83,7 +86,7 @@ func Test_Logger_Log(t *testing.T) {
 				"message", "foo",
 				"light", "darkness",
 				"zoo", "",
-				"stack", tracer.Stack(tracer.Mask(&tracer.Error{Kind: "testError"})),
+				"stack", tracer.Json(tracer.Mask(&tracer.Error{Description: "test error description"})),
 			},
 		},
 		// Case 007 is like 6 but without caller.
@@ -92,7 +95,7 @@ func Test_Logger_Log(t *testing.T) {
 				"level", "warning",
 				"message", "foo",
 				"code", "",
-				"stack", tracer.Stack(tracer.Mask(tracer.Mask(&tracer.Error{Kind: "testError"}))),
+				"stack", tracer.Json(tracer.Mask(tracer.Mask(&tracer.Error{Description: "test error description"}))),
 			},
 			cal: EmptyCaller,
 		},
@@ -176,7 +179,7 @@ func Test_Logger_Log(t *testing.T) {
 				}
 			}
 
-			p := filepath.Join("testdata/log", fileName(i))
+			p := filepath.Join("testdata", "log", fmt.Sprintf("case.%03d.golden", i))
 			if *update {
 				err := os.WriteFile(p, actual, 0644) // nolint:gosec
 				if err != nil {
@@ -196,7 +199,11 @@ func Test_Logger_Log(t *testing.T) {
 	}
 }
 
-func Test_Logger_LogCtx(t *testing.T) {
+// Test_Logger_Log_with_context ensures that the logger implementation produces
+// the correct output by supplying more context.
+//
+//	go test -run Test_Logger_Log_with_context -update
+func Test_Logger_Log_with_context(t *testing.T) {
 	testCases := []struct {
 		ctx context.Context
 		kvs []string
@@ -279,7 +286,7 @@ func Test_Logger_LogCtx(t *testing.T) {
 				"message", "foo",
 				"light", "darkness",
 				"zoo", "",
-				"stack", tracer.Stack(tracer.Mask(&tracer.Error{Kind: "testError"})),
+				"stack", tracer.Json(tracer.Mask(&tracer.Error{Description: "test error description"})),
 			},
 		},
 		// Case 007 is like 6 but without caller.
@@ -289,7 +296,7 @@ func Test_Logger_LogCtx(t *testing.T) {
 				"level", "warning",
 				"message", "foo",
 				"code", "",
-				"stack", tracer.Stack(tracer.Mask(tracer.Mask(&tracer.Error{Kind: "testError"}))),
+				"stack", tracer.Json(tracer.Mask(tracer.Mask(&tracer.Error{Description: "test error description"}))),
 			},
 			cal: EmptyCaller,
 		},
@@ -376,7 +383,7 @@ func Test_Logger_LogCtx(t *testing.T) {
 				}
 			}
 
-			p := filepath.Join("testdata/logctx", fileName(i))
+			p := filepath.Join("testdata", "logctx", fmt.Sprintf("case.%03d.golden", i))
 			if *update {
 				err := os.WriteFile(p, actual, 0644) // nolint:gosec
 				if err != nil {
@@ -394,10 +401,6 @@ func Test_Logger_LogCtx(t *testing.T) {
 			}
 		})
 	}
-}
-
-func fileName(i int) string {
-	return "case-" + fmt.Sprintf("%03d", i) + ".golden.json"
 }
 
 func isJSONError(err error) bool {
