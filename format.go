@@ -1,14 +1,29 @@
 package logger
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"slices"
 	"strings"
 
 	"github.com/xh3b4sd/logger/meta"
+	"github.com/xh3b4sd/tracer"
 )
 
 var DefaultFormatter = JSONFormatter
+
+func JSONIndenter(c context.Context, m map[string]string) string {
+	str := JSONFormatter(c, m)
+
+	var buf bytes.Buffer
+	err := json.Indent(&buf, []byte(str), "", "    ")
+	if err != nil {
+		tracer.Panic(err)
+	}
+
+	return buf.String()
+}
 
 // JSONFormatter transforms the given map into the string representation of a
 // simple JSON object. One specificity of JSONFormatter is that it treats the
